@@ -1,0 +1,187 @@
+Getting ids for new uuids
+root
+ |-- new_id: long (nullable = false)
+ |-- new_brand: string (nullable = false)
+ |-- old_id: integer (nullable = true)
+ |-- old_brand: string (nullable = true)
+
++------+---------------+------+---------------+
+|new_id|new_brand      |old_id|old_brand      |
++------+---------------+------+---------------+
+|8     |aerokat        |1     |aerokat        |
+|9     |perfect prep eq|2     |perfect prep eq|
+|9     |Perfect-product|2     |Perfect-product|
+|10    |handson        |6     |handson        |
+|10    |handson equine |6     |handson equine |
+|11    |apple inc      |3     |apple inc      |
+|13    |aerodawg       |1     |aerodawg       |
+|14    |purr           |5     |purr           |
+|14    |pro purina     |4     |pro purina     |
++------+---------------+------+---------------+
+
+Combning dfs
++---+
+|id |
++---+
+|9  |
+|10 |
+|8  |
+|11 |
+|13 |
+|14 |
+|6  |
+|5  |
+|1  |
+|3  |
+|2  |
+|4  |
++---+
+
+Combning dfs
++---+---+
+|src|dst|
++---+---+
+|13 |1  |
+|10 |6  |
+|8  |1  |
+|14 |4  |
+|14 |5  |
+|11 |3  |
+|9  |2  |
+|2  |9  |
+|4  |14 |
+|5  |14 |
+|6  |10 |
+|1  |13 |
+|1  |8  |
+|3  |11 |
++---+---+
+
+Combning dfs
+connected_brand_clusters
++---+---------+-------------------+
+|id |component|brand              |
++---+---------+-------------------+
+|6  |6        |handson equine     |
+|6  |6        |handson equine. Llc|
+|6  |6        |handson            |
+|5  |4        |purr               |
+|5  |4        |purina             |
+|1  |1        |aerodawg           |
+|1  |1        |aerokat            |
+|3  |3        |apple inc          |
+|3  |3        |apple              |
+|2  |2        |Perfect-product    |
+|2  |2        |perfect prep eq    |
+|4  |4        |pro purina         |
+|4  |4        |pro plan           |
+|8  |1        |trudell medicin    |
+|8  |1        |aerokat            |
+|9  |2        |perfect prep eq    |
+|9  |2        |perfect product llc|
+|9  |2        |Perfect-product    |
+|10 |6        |handson            |
+|10 |6        |handson equine     |
+|11 |3        |apple corp ltd     |
+|11 |3        |apple inc          |
+|13 |1        |aerodawg           |
+|13 |1        |trudell            |
+|14 |4        |purr               |
+|14 |4        |pro purina         |
++---+---------+-------------------+
+
+set_id_list_brand_cluster
++----------+-------------------------------------------------------+
+|id_sets   |brand_set                                              |
++----------+-------------------------------------------------------+
+|[6, 10]   |[handson equine. Llc, handson, handson equine]         |
+|[1, 8, 13]|[trudell medicin, aerodawg, aerokat, trudell]          |
+|[3, 11]   |[apple, apple corp ltd, apple inc]                     |
+|[2, 9]    |[perfect prep eq, perfect product llc, Perfect-product]|
+|[4, 5, 14]|[pro plan, purina, purr, pro purina]                   |
++----------+-------------------------------------------------------+
+
+updated_id_brand_cluster
++-------------------------------------------------------+---+
+|brand_set                                              |id |
++-------------------------------------------------------+---+
+|[handson equine. Llc, handson, handson equine]         |6  |
+|[trudell medicin, aerodawg, aerokat, trudell]          |1  |
+|[apple, apple corp ltd, apple inc]                     |3  |
+|[perfect prep eq, perfect product llc, Perfect-product]|2  |
+|[pro plan, purina, purr, pro purina]                   |4  |
++-------------------------------------------------------+---+
+
+old_brand_set
++------+----------------------------------------------+
+|old_id|old_brand_set                                 |
++------+----------------------------------------------+
+|1     |[aerodawg, aerokat]                           |
+|6     |[handson equine. Llc, handson, handson equine]|
+|3     |[apple, apple inc]                            |
+|5     |[purina, purr]                                |
+|4     |[pro plan, pro purina]                        |
+|7     |[dry shod, dryshod west]                      |
+|2     |[perfect prep eq, Perfect-product]            |
++------+----------------------------------------------+
+
+set_id_old_and_updated_brand_cluster
++-------------------------------------------------------+---+----------------------------------------------+
+|brand_set                                              |id |old_brand_set                                 |
++-------------------------------------------------------+---+----------------------------------------------+
+|[handson equine. Llc, handson, handson equine]         |6  |[handson equine. Llc, handson, handson equine]|
+|[trudell medicin, aerodawg, aerokat, trudell]          |1  |[aerodawg, aerokat]                           |
+|[apple, apple corp ltd, apple inc]                     |3  |[apple, apple inc]                            |
+|[perfect prep eq, perfect product llc, Perfect-product]|2  |[perfect prep eq, Perfect-product]            |
+|[pro plan, purina, purr, pro purina]                   |4  |[pro plan, pro purina]                        |
++-------------------------------------------------------+---+----------------------------------------------+
+
+updation_brand_cluster
++---+--------------------------+
+|id |brand_set                 |
++---+--------------------------+
+|1  |[trudell medicin, trudell]|
+|3  |[apple corp ltd]          |
+|2  |[perfect product llc]     |
+|4  |[purina, purr]            |
++---+--------------------------+
+
+old_and_updated_set_id
++----------+
+|old_set_id|
++----------+
+|6         |
+|5         |
+|1         |
+|3         |
+|2         |
+|4         |
+|9         |
+|10        |
+|8         |
+|11        |
+|13        |
+|14        |
++----------+
+
+new_set_id_brand_cluster
++---+-------------------------------------------------------+
+|id |brand_set                                              |
++---+-------------------------------------------------------+
+|9  |[perfect prep eq, perfect product llc, Perfect-product]|
+|10 |[handson, handson equine]                              |
+|12 |[averapack, touch]                                     |
+|8  |[trudell medicin, aerokat]                             |
+|11 |[apple corp ltd, apple inc]                            |
+|13 |[aerodawg, trudell]                                    |
+|14 |[purr, pro purina]                                     |
++---+-------------------------------------------------------+
+
+insertion_brand_cluster
++---+------------------+
+|id |brand_set         |
++---+------------------+
+|12 |[averapack, touch]|
++---+------------------+
+
+Combning dfs

@@ -1,0 +1,108 @@
+input
+
+last_run_time: calculated from the data stored(s3) in last run output (for delta date calculation)
+prod_d: ml_input generated every week (the latest data matirialistic view for all the products should be geenrated by DE team rather than ml team and use that as a source) 
+product_matches: ml_stack_prod_matches.match_data_warehouse_v2 (type = exact_macthes and delta)
+brand_dict : take from de team
+
+Processing
+
+1.  BRAND-CLUSTERING
+
+    Initial run:
+    product_matches -> brand_matches
+
+    join(prod_d, product_matches) => brand_matches
+    brand_name_df = get_unique_brand_names(brand_matches)
+
+    brand_dictionary -> vertex of graph
+    brand_matches -> edge of graph
+    g = create_graph(vertex, edge)
+    brand_cluster = g.connected_components() -->aurora, s3
+
+
+    (brand_dict - brand_cluster) = unclusterd_brands  
+
+    string_cluster = string_clustering(un_clusterd_brands)  -->aurora
+
+    (un_clusterd_brands - string_cluster) = new_unclustered_brands -->  aurora
+
+    join(brand_name_df, brand_dict) -> dabatabase_schema_data (all data from brand_dict has to go to aurora  db)
+
+
+    Consecutive run: only for delta exact matches
+
+    product_matches -> brand_matches
+
+    product_matches join prod_d  on (product_matches.uuid_a == prod_d.uuid) and (product_matches.uuid_b == prod_d.uuid) => brand_matches
+    brand_name_df = get_unique_brand_names(brand_matches)
+
+    brand_dictionary -> vertex of graph
+    brand_matches -> edge of graph
+    g = create_graph(vertex, edge)
+    new_brand_cluster = g.connected_components() -->aurora, s3
+
+    old_brand_cluster = prepare old brand cluster from aurora db
+    x = get_max_id(old_brand_cluster)
+    add_id(new_brand_cluster, X+1)
+
+    df structure
+    - old_brand_cluster['old_id', 'old_brand']
+    - new_brand_cluster['new_id', 'new_brand']
+
+    old_brand_cluster join new_brand_cluster  on old_brand_cluster.old_brand == new_brand_cluster.new_brand) => set_id_matches
+    - set_id_matches[old_id, new_id, brand]
+    - the above joins show that due to new matches new seta are created and if both old and new cluster have a common brand then there is an edge between those cluster 
+    - here vrand name act as an edge between two different set id
+
+    vertex = unique( set_id_matches['old_id'] UNION  set_id_matches['new_id'])
+
+    edge = unique( (set_id['old_id'] as src  set_id['new_id'] as dst)  UNION (set_id['new_id'] as src  set_id['old_id'])
+
+    g = Graph(vertex, edge)
+
+    set_cluster = g.connectedComponents()
+    - give us cluster of set ids and these set ids need to be merged to form the new cluster
+    
+    old_brand_cluster + new_brand_cluster => combined_cluster //combined_cluster['set_id','brand']
+
+    set_cluster join combined_cluster on set_cluster.id == combined_cluster.set_id => connected_brand_clusters
+    - connected_brand_clusters['component','id','brand']
+    - brand vlusters are fetched for the given set_ids
+
+    grouping based on components and collecting ids and brands having the same component id => set_id_list_brand_cluster
+    - set_id_list_brand_cluster['id_set','brand_set']
+
+    taking min id from the set_id_list_brand_cluster.id_set and assing this a updated id for the brand_set => updated_id_brand_cluster
+    - updated_id_brand_cluster['id','brand_set']
+
+    for the id's present in updated_id_brand_cluster remove all the old brands present in the brand_set => updated_brand_cluster
+    - updated_brand_cluster['id', 'brands']
+    - the old brands are removed because those still have the same set id so no updaation is need for the rest of the brands we need to update the cluster id
+
+    from new_brand_cluster remove all the brands present in updated_brand_cluster => new_brand_cluster
+
+    updated_brand_cluster + new_brand_cluster => merged_brand_cluster
+
+
+2.  STRING-CLUSTERING
+    from all the brands present in brand brand dictionary remove all the brands present in merged_brand_cluster => unclustered_brands
+
+    perform string clustering on those unclustered_brands => string_cluster
+
+    assigne id to the string_cluster starting form the max cluster id present in merged_brand_cluster incremented by 1 => id_string_cluster
+
+    from the unclustered_brands remove all brands present in id_string_cluster ==> new_unclustered_brands
+
+
+OUTPUT
+    merged_brand_cluster, id_string_cluster, new_unclustered_brands
+
+    save all of them t0 arora by joining with brand_dict to get all data of the remaining field present in aurora DB
+
+
+
+
+     
+
+

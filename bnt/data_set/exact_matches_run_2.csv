@@ -1,0 +1,9 @@
+uuid_a,uuid_b,sku_uuid_a,sku_uuid_b,score,base_source_store,comp_source_store
+sku_pb002554<>pb002554<>entirelypets<>entirelypets,sku_328012055<>328012055<>walmart<>walmart,pb002554<>entirelypets<>entirelypets,328012055<>walmart<>walmart,0.9,walmart,walmart
+sku_917115167<>917115167<>walmart<>walmart,000005274508<>146940<>chewy<>chewy,917115167<>walmart<>walmart,146940<>chewy<>chewy,0.9,walmart,walmart
+Sku_253665225<>253665225<>walmart<>walmart,sku_509654014<>509654014<>walmart<>walmart,253665225<>walmart<>walmart,509654014<>walmart<>walmart,0.9,walmart,walmart
+877370002039<>2987697<>petco<>petco,Sku_253665225<>253665225<>walmart<>walmart,2987697<>petco<>petco,253665225<>walmart<>walmart,0.9,walmart,walmart
+736511466614<>1565303<>petco<>petco,sku_753214905<>753214905<>walmart<>walmart,1565303<>petco<>petco,753214905<>walmart<>walmart,0.9,walmart,walmart
+sku_722146949<>722146949<>walmart<>walmart,012104975085<>244029899<>tractorsupply<>tractorsupply,722146949<>walmart<>walmart,244029899<>tractorsupply<>tractorsupply,0.9,walmart,walmart
+019035462721<>783011909<>walmart<>walmart,656661119621<>442452479<>walmart<>walmart,783011909<>walmart<>walmart,442452479<>walmart<>walmart,0.9,walmart,walmart
+807203105262<>83438<>chewy<>chewy,076484030406<>202146<>chewy<>chewy,83438<>chewy<>chewy,202146<>chewy<>chewy,0.9,walmart,walmart
